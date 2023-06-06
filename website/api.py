@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from . import db
 from .models import Todo
+from werkzeug.utils import secure_filename
+import os
 
 api = Blueprint('api', __name__)
 
@@ -36,3 +38,32 @@ def add():
         'title': new_todo.title,
         'complete': new_todo.complete,
     })
+
+
+UPLOAD_FOLDER = 'static/files'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@api.route("/upload", methods=["POST"])
+def upload():
+
+    # file = form.file.data # First grab the file
+    file = request.files['file']
+    if not file:
+        return 'No file uploaded!', 400
+
+    filename = secure_filename(file.filename)
+    mimetype = file.mimetype
+
+    if not filename or not mimetype:
+        return 'Bad upload!', 400
+
+    file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),
+              UPLOAD_FOLDER, secure_filename(file.filename)))  # Then save the file
+
+    return 'File Uploaded!', 200

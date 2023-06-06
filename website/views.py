@@ -39,3 +39,8 @@ def delete(todo_id):
     db.session.delete(todo)
     db.session.commit()
     return redirect(url_for("views.home"))
+
+
+@views.route("/upload")
+def upload():
+    return render_template("up.html")
