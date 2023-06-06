@@ -3,6 +3,7 @@ from . import db
 from .models import Todo
 from werkzeug.utils import secure_filename
 import os
+from .services import OCR
 
 api = Blueprint('api', __name__)
 
@@ -63,7 +64,13 @@ def upload():
     if not filename or not mimetype:
         return 'Bad upload!', 400
 
-    file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-              UPLOAD_FOLDER, secure_filename(file.filename)))  # Then save the file
+    # Then save the file
+    # file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),
+    #           UPLOAD_FOLDER, secure_filename(file.filename)))
 
-    return 'File Uploaded!', 200
+    text = OCR(file)
+
+    # file64 = file.read()
+    # print(file64, mimetype)
+
+    return jsonify({'name': filename, 'text': text}), 200
