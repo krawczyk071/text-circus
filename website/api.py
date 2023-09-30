@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 from . import db
 from .models import Todo
 from werkzeug.utils import secure_filename
-import os
 from .services import OCR
 
 api = Blueprint('api', __name__)
@@ -42,7 +41,7 @@ def add():
 
 
 UPLOAD_FOLDER = 'static/files'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', }
 
 
 def allowed_file(filename):
